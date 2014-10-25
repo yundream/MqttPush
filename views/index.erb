@@ -1,0 +1,69 @@
+<script>
+	function mqtt(ip, port, qos, topic) {
+		var ws = new WebSocket('ws://'+window.location.host+'/mqtt?ip='+ip+'&topic='+topic+'&port='+port)
+		ws.onopen = function() {};
+		ws.onclose = function() {};
+		ws.onmessage = function(m) {
+			addItem(JSON.parse(m.data))
+		};
+	}
+	function addItem(obj) {
+		$("#message").append(
+			'<li><span class="label">'+obj.time+'</span> '+obj.msg+'</li>'
+		)
+	}
+
+	$(document).ready(function() {
+		$("#submit").click(function(e) {
+			var ip = $("#ip").val()
+			var port = $("#port").val()
+			var qos = $("#qos").val()
+			var topic = $("#topic").val()
+			mqtt(ip, port, qos, topic)
+		});
+	});
+</script>
+<form>
+<div class="row">
+	<div class="large-12 columns">
+		<div class="large-2 columns">
+			<label>Host</label>
+				<input id="ip" type="text" name="ip" placeholder="127.0.0.1"/>
+			</label>
+		</div>
+		<div class="large-2 columns">
+			<label>Port</label>
+				<input id="port" type="text" name="port" placeholder="1833"/>
+			</label>
+		</div>
+		<div class="large-4 columns left">
+			<label>Topic</label> 
+				<input id="topic" type="text" name="topic" placeholder="/sensor/temperature"/>
+			</label>
+		</div>
+		<div class="large-4 columns">
+			<label>QoS</label> 
+				<input type="radio" id="qos" name="qos" value="0" checked><label>0</label>
+				<input type="radio" id="qos" name="qos" value="1"><label>1</label>
+				<input type="radio" id="qos" name="qos" value="2"><label>2</label>
+			</label>
+		</div>
+	</div>
+	<div class="large-12 columns">
+		<div class="large-4 columns">
+			<input id="submit" type="button" class="button tiny" value="연결">
+		</div>
+	</div>
+</div>
+</form>
+
+<div class="row">
+	<div class="large-12 columns">
+		<div class="large-12 columns">
+			<div class="panel">
+				<ul class="no-bullet" id="message">
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
